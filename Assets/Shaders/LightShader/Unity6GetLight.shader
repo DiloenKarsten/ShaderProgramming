@@ -63,7 +63,8 @@ Shader "Custom/UnlitShader"
             half4 frag(Varyings IN) : SV_Target
             {
                  Light light = GetMainLight();
-                //IN.lightAmount = LightingLambert(light.color,light.direction,IN.normal); // Ligthing Lambert function
+                Light light2 = GetAdditionalLight(0,IN.wPos);
+                IN.lightAmount = LightingLambert(light2.color,light2.direction,IN.normal); // Ligthing Lambert function
                 float3 N = normalize(IN.normal); //normalized to improve specular
                 float3 L = normalize(light.direction);
                 float3 lambert = saturate(dot(N,L));
@@ -86,7 +87,7 @@ Shader "Custom/UnlitShader"
 
 
 
-               return float4(diffuseLight*_Color+specularLight,1); //Specular light is not multiplied by color unless material is metallic
+               return float4(diffuseLight*_Color+specularLight+IN.lightAmount,1); //Specular light is not multiplied by color unless material is metallic
 
 
 
