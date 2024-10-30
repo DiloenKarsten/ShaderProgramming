@@ -87,7 +87,7 @@ Shader "Unlit/LightTest"
 
 
 
-                return float4(diffuseLight*_Color+specularLight,1); //Specular light is not multiplied by color unless material is metallic
+               return float4(diffuseLight*_Color+specularLight,1); //Specular light is not multiplied by color unless material is metallic
 
                 //return float4(diffuseLight,1);
             }
