@@ -17,7 +17,7 @@ Shader "Custom/UnlitShader"
 
             #pragma vertex vert
             #pragma fragment frag
-
+          
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             
@@ -46,7 +46,7 @@ Shader "Custom/UnlitShader"
             float4 _BaseMap_ST;
             float _Glossyness;
             CBUFFER_END
-
+            
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
@@ -95,6 +95,12 @@ Shader "Custom/UnlitShader"
                return float4(diffuseLight*_Color,1);
             }   
             ENDHLSL
+
+            
         }
+            Pass
+            {
+              Tags  {"lightmode"="ShadowCaster"}
+            }
     }
 }
