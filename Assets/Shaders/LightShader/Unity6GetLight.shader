@@ -2,7 +2,7 @@ Shader "Custom/UnlitShader"
 {
     Properties
     {
-         _MainTex ("Texture", 2D) = "white" {}
+        [MainTexture] _TextureAlbedo ("TextureAlbedo", 2D) = "white" {}
         _Glossyness ("Gloss", Range(0,1)) = 1
         _Color ("Color", Color) = (1,1,1,1)
         _LightRange ("Add Light Range", Range(0,1)) = 1
@@ -39,12 +39,12 @@ Shader "Custom/UnlitShader"
                 half3 lightAmount : TEXCOORD2;
             };
 
-            TEXTURE2D(_BaseMap);
-            SAMPLER(sampler_BaseMap);
+            TEXTURE2D(_TextureAlbedo);
+            SAMPLER(sampler_TextureAlbedo);
 
             CBUFFER_START(UnityPerMaterial)
             float4 _Color;
-            float4 _BaseMap_ST;
+            float4 _TextureAlbedo_ST;
             float _Glossyness;
             float _LightRange;
             CBUFFER_END
@@ -54,17 +54,19 @@ Shader "Custom/UnlitShader"
                 Varyings OUT;
 
                 OUT.vertexCS = TransformObjectToHClip(IN.vertexOS.xyz);
-                OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
+                OUT.uv = TRANSFORM_TEX(IN.uv, _TextureAlbedo);
                 OUT.normal = TransformObjectToWorldNormal(IN.normal);
                 OUT.wPos = mul(unity_ObjectToWorld, IN.vertexOS);
-                Light light = GetMainLight();
-                OUT.lightAmount = LightingLambert(light.color,light.direction,OUT.normal);
+               
                 return OUT;
             }
 
             half4 frag(Varyings IN) : SV_Target
             {
-                 Light light = GetMainLight();
+                half3 rock = SAMPLE_TEXTURE2D(_TextureAlbedo,sampler_TextureAlbedo,IN.uv).rgb;
+                half3 surfaceColor = rock * _Color.rgb;
+                
+                Light light = GetMainLight();
                 Light light2 = GetAdditionalLight(0,IN.wPos);
                 light2.distanceAttenuation = _LightRange;
                 IN.lightAmount = LightingLambert(light2.color,light2.direction,IN.normal)*light2.distanceAttenuation; // Ligthing Lambert function
@@ -89,8 +91,8 @@ Shader "Custom/UnlitShader"
                 float fresnel = (1-dot(V,N))*((cos(_Time.y*4))*0.5+0.5);
 
 
-
-               return float4(diffuseLight*_Color+specularLight+IN.lightAmount,1); //Specular light is not multiplied by color unless material is metallic
+                return float4 (surfaceColor*diffuseLight+IN.lightAmount,1);
+               return float4(diffuseLight*surfaceColor*specularLight+IN.lightAmount,1); //Specular light is not multiplied by color unless material is metallic
 
 
 

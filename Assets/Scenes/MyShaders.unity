@@ -521,6 +521,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GiantModel01 - Golem
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: cfbfb95b5f2b90949be0b5faab2775fb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1325,7 +1329,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1732079270
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2000,7 +2004,7 @@ Transform:
   m_GameObject: {fileID: 1944022588}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7211047, y: -0, z: -0, w: 0.69282615}
-  m_LocalPosition: {x: 5.69, y: -1.21, z: 1.85}
+  m_LocalPosition: {x: 7.865, y: 0.557, z: -1.957}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2277,6 +2281,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GiantModel01 - Golem (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: cfbfb95b5f2b90949be0b5faab2775fb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2484,7 +2492,7 @@ Transform:
   m_GameObject: {fileID: 2145341441}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.54, y: -0.85, z: 0}
+  m_LocalPosition: {x: 6.9, y: -0.85, z: 0}
   m_LocalScale: {x: 1.4194561, y: 1.4194561, z: 1.4194561}
   m_ConstrainProportionsScale: 0
   m_Children: []
