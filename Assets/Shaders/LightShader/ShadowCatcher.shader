@@ -1,10 +1,11 @@
-Shader "Unlit/ShadowCatcher"
+Shader "Unlit/SoftShadowCatcher"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _Color ("Color", Color) = (1,1,1,1)
     }
-    SubShader
+   SubShader
     {
 
         Tags { "RenderType" = "AlphaTest" "RenderPipeline" = "UniversalPipeline" }
@@ -15,7 +16,7 @@ Shader "Unlit/ShadowCatcher"
 
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN _SOFT_SHADOWS
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
@@ -29,7 +30,6 @@ Shader "Unlit/ShadowCatcher"
                 float4 positionCS  : SV_POSITION;
                 float4 shadowCoords : TEXCOORD3;
             };
-            
 
             Varyings vert(Attributes IN)
             {
@@ -52,12 +52,12 @@ Shader "Unlit/ShadowCatcher"
             half4 frag(Varyings IN) : SV_Target
             {
                 // Get the value from the shadow map at the shadow coordinates
-                float shadowAmount = MainLightRealtimeShadow(IN.shadowCoords);
+                half shadowAmount = MainLightRealtimeShadow(IN.shadowCoords);
 
                 // Set the fragment color to the shadow value
                 return shadowAmount;
             }
-        
+            
             ENDHLSL
         }
     }

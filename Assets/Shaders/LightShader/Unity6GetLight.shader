@@ -5,6 +5,7 @@ Shader "Custom/UnlitShader"
          _MainTex ("Texture", 2D) = "white" {}
         _Glossyness ("Gloss", Range(0,1)) = 1
         _Color ("Color", Color) = (1,1,1,1)
+        _LightRange ("Add Light Range", Range(0,1)) = 1
     }
 
     SubShader
@@ -45,6 +46,7 @@ Shader "Custom/UnlitShader"
             float4 _Color;
             float4 _BaseMap_ST;
             float _Glossyness;
+            float _LightRange;
             CBUFFER_END
             
             Varyings vert(Attributes IN)
@@ -64,7 +66,8 @@ Shader "Custom/UnlitShader"
             {
                  Light light = GetMainLight();
                 Light light2 = GetAdditionalLight(0,IN.wPos);
-                IN.lightAmount = LightingLambert(light2.color,light2.direction,IN.normal); // Ligthing Lambert function
+                light2.distanceAttenuation = _LightRange;
+                IN.lightAmount = LightingLambert(light2.color,light2.direction,IN.normal)*light2.distanceAttenuation; // Ligthing Lambert function
                 float3 N = normalize(IN.normal); //normalized to improve specular
                 float3 L = normalize(light.direction);
                 float3 lambert = saturate(dot(N,L));
