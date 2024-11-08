@@ -2,8 +2,7 @@ Shader "Unlit/SoftShadowCatcher"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _Color ("Color", Color) = (1,1,1,1)
+       
     }
    SubShader
     {
@@ -16,10 +15,12 @@ Shader "Unlit/SoftShadowCatcher"
 
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN _SOFT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
+            
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             struct Attributes
             {
                 float4 positionOS  : POSITION;
@@ -29,8 +30,11 @@ Shader "Unlit/SoftShadowCatcher"
             {
                 float4 positionCS  : SV_POSITION;
                 float4 shadowCoords : TEXCOORD3;
+                float3 shadowFade : TEXCOORD4;
             };
 
+            
+            
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
@@ -42,20 +46,23 @@ Shader "Unlit/SoftShadowCatcher"
 
                 // Convert the vertex position to a position on the shadow map
                 float4 shadowCoordinates = GetShadowCoord(positions);
+              
 
                 // Pass the shadow coordinates to the fragment shader
                 OUT.shadowCoords = shadowCoordinates;
+             
 
                 return OUT;
             }
 
             half4 frag(Varyings IN) : SV_Target
-            {
-                // Get the value from the shadow map at the shadow coordinates
-                half shadowAmount = MainLightRealtimeShadow(IN.shadowCoords);
-
-                // Set the fragment color to the shadow value
-                return shadowAmount;
+            {half4 shadowParams = GetMainLightShadowParams();
+                
+                 ShadowSamplingData shadowSamplingData = GetMainLightShadowSamplingData();
+                
+               
+                return SampleShadowmap(TEXTURE2D_ARGS(_MainLightShadowmapTexture, sampler_LinearClampCompare), IN.shadowCoords, shadowSamplingData, shadowParams, false);
+             
             }
             
             ENDHLSL
