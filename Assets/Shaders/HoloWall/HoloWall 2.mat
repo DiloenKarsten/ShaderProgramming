@@ -106,16 +106,16 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FadeRange: 46.4
+    - _FadeRange: 100
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _HexMultiplier: 1
-    - _HexRows: 11.42
+    - _HexMultiplier: 0.732
+    - _HexRows: 32.8
     - _HexScale: 11
     - _HexStepMax: 0.21
     - _HexStepMin: 0.01
-    - _HexesprRow: 36.1
+    - _HexesprRow: 10.2
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -130,18 +130,19 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - _maxGrowth: 0.157
+    - _maxGrowth: 0.109
     - _xBound: 1
-    - _xPoint: 0.365
+    - _xPoint: 0.656
     - _yBound: 1
-    - _yPoint: 0.307
+    - _yPoint: 0.441
     m_Colors:
     - _BackgroundColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColor: {r: 1, g: 0.5921569, b: 0, a: 1}
+    - _BaseColor: {r: 0.09579086, g: 0, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DotColor: {r: 1, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _PlayerPosition: {r: -0.02, g: 0.98, b: 3.25, a: 0}
+    - _PlayerPosition: {r: -6.23, g: 3.07, b: 11.86, a: 0}
+    - _SecondColor: {r: 0.12474215, g: 1, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _TargetPosition: {r: 0.8, g: -0.08, b: 11.65, a: 0}
   m_BuildTextureStacks: []

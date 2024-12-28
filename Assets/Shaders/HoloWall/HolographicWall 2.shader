@@ -5,6 +5,8 @@ Shader "Custom/HolographicWall1"
         _PlayerPosition ("Player Position", Vector) = (0,0,0,0)
         _FadeRange ("Fade Range", Range(0,100)) = 0
         _BaseColor ("Base Color", Color) = (0.0, 0.7, 1.0, 1.0)
+        _SecondColor ("Base Color", Color) = (0.0, 0.7, 1.0, 1.0)
+        
         _HexesprRow ("HexProw",Int) =1
         _HexRows ("HexRows",Int) =1
         _HexMultiplier ("Hex Multiplier",Range(0,1)) =1
@@ -46,6 +48,7 @@ Shader "Custom/HolographicWall1"
             float _FadeRange;
             float _HexScale;
             float4 _BaseColor;
+            float4 _SecondColor;
             int  _HexesprRow;
             float _HexMultiplier;
             int _HexRows;
@@ -106,6 +109,9 @@ Shader "Custom/HolographicWall1"
                 float horizontalOffset = 0.2 * saturate(_HexMultiplier);      
                 float verticalOffset = 0.056 * saturate(_HexMultiplier);   
 
+                
+                float3 color = (0,0,0);
+           
                 for (int y = 0; y <= _HexRows; y++)
                 {
                     float rowY = y * verticalOffset;
@@ -126,20 +132,35 @@ Shader "Custom/HolographicWall1"
                         // Generate the hexagon
                         float hex = hexagon(i.uv, hexCenter, distanceToHex * _FadeRange);
 
+                        //Invert hex to color it
+                        hex = 1-hex;
+                        
+                    if (hex > 0.0 )
+                    {
+                        color = lerp(_BaseColor, _SecondColor,distanceToHex*3);
+                        
+                    }
+                        
+                        comHex*=hex;
+                        
+                        
+
                         // Combine hexagons
-                        comHex *= hex;
+                      
 
                         // Debug: Mark hex centers in red
-                        if (distance(i.uv, hexCenter) < 0.01) {
-                            return fixed4(1.0, 0.0, 0.0, 1.0); // Red highlight for hex centers
-                        }
+                       // if (distance(i.uv, hexCenter) < 0.01) {
+                        //    return fixed4(1.0, 0.0, 0.0, 1.0); // Red highlight for hex centers
+                        //}
                     }
                 }
+        
 
                 comHex = 1 - comHex; // Invert for visual effect
-
+                
                 // Return the final result
-                return fixed4(comHex, comHex, comHex, 1.0);
+                 //return fixed4(color * hexCutout, hexCutout);
+                return fixed4(comHex*color, 1.0);
             }
 
 
