@@ -91,7 +91,7 @@ Shader "Custom/UnlitShader"
                 float fresnel = (1-dot(V,N))*((cos(_Time.y*4))*0.5+0.5);
 
 
-                return float4 (surfaceColor*diffuseLight+IN.lightAmount,1);
+                
                return float4(diffuseLight*surfaceColor*specularLight+IN.lightAmount,1); //Specular light is not multiplied by color unless material is metallic
 
 

@@ -85,11 +85,10 @@ Shader "Unlit/LightTest"
 
                 float fresnel = (1-dot(V,N))*((cos(_Time.y*4))*0.5+0.5);
 
-
-
+                return float4(specularLight,1);
                return float4(diffuseLight*_Color+specularLight,1); //Specular light is not multiplied by color unless material is metallic
 
-                //return float4(diffuseLight,1);
+                //
             }
             
             
