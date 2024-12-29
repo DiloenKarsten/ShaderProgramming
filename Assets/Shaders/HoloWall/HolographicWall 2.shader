@@ -126,8 +126,8 @@ Shader "Custom/HolographicWall1"
 
                         // Measure distance in UV space
                         float distanceToHex = max(distance(hexCenter, p_uv), _maxGrowth); // Ensure a minimum distance
-                        //float zDistance = max(distance(i.worldPos.z,_PlayerPosition.z),_maxGrowth*8);
-                        //distanceToHex*=zDistance;
+                        float zDistance = max(distance(i.worldPos.z,_PlayerPosition.z),_maxGrowth*8);
+                        distanceToHex*=zDistance;
                         float hex = hexagon(i.uv, hexCenter, distanceToHex * _FadeRange);
 
                         //Invert hex to color it
