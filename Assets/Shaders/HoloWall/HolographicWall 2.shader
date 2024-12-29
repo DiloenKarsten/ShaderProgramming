@@ -5,6 +5,7 @@ Shader "Custom/HolographicWall1"
         _PlayerPosition ("Player Position", Vector) = (0,0,0,0) // can be removed
         
         [Header (Transparency)]
+         _TextureHolo ("Texture Hologram", 2D) ="white" {}
         _RevealDistance ("Reveal Distance", Float) = 10.0
         _FadeStrength ("Fade Strength", Float) = 10.0
        
@@ -62,6 +63,7 @@ Shader "Custom/HolographicWall1"
             float _HexMultiplier;
             int _HexRows;
             float _maxGrowth;
+            sampler2D _TextureHolo;
             
             v2f vert (appdata v)
             {
@@ -148,16 +150,24 @@ Shader "Custom/HolographicWall1"
                         
                         distanceToHex*=zDistance;
                         float hex = hexagon(i.uv, hexCenter, distanceToHex * _HexScale);
-
+                        float innerHex = hexagon(i.uv, hexCenter, distanceToHex * _HexScale*1.15);
                         //Invert hex to color it
                         hex = 1-hex;
+                        innerHex = 1- innerHex;
+                        
+                       // hex *= tex2D(_TextureHolo,i.uv);
+                        
                         
                     if (hex > 0.0 )
                     {
                         color = lerp(_NearColor, _FarColor,distanceToHex*3);
                         visibility = lerpVisibility(_RevealDistance,-distanceToHex,_FadeStrength);
                     }
-                        
+                     if (innerHex > 0.0 )
+                    {
+                        color = lerp(_NearColor, _FarColor,distanceToHex)*0.5;
+                        visibility = lerpVisibility(_RevealDistance,-distanceToHex,_FadeStrength);
+                    }   
                         // Debug: Mark hex centers in red
                        // if (distance(i.uv, hexCenter) < 0.01) {
                         //    return fixed4(1.0, 0.0, 0.0, 1.0); // Red highlight for hex centers
