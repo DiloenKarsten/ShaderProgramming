@@ -130,7 +130,8 @@ Shader "Custom/HolographicWall1"
                 //Empty color vector colored in by hexes in loop
                 float1 visibility = 0;
                 float4 color = (0,0,0,visibility);
-           
+                
+                
                 for (int y = 0; y <= _HexRows; y++)
                 {
                     float rowY = y * verticalOffset;
@@ -165,7 +166,7 @@ Shader "Custom/HolographicWall1"
                     }
                      if (innerHex > 0.0 )
                     {
-                        color = lerp(_NearColor, _FarColor,distanceToHex)*0.5;
+                        color = lerp(_NearColor*0.2, _FarColor,distanceToHex);
                         visibility = lerpVisibility(_RevealDistance,-distanceToHex,_FadeStrength);
                     }   
                         // Debug: Mark hex centers in red
@@ -175,7 +176,7 @@ Shader "Custom/HolographicWall1"
                     }
                 }
         
-                return fixed4(color.rgb,visibility*0.6);
+                return fixed4(color.rgb*3,visibility*0.2);
             }
 
 
