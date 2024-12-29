@@ -88,7 +88,7 @@ Shader "Custom/HolographicWall1"
                 float3 playerWorldPos = _PlayerPosition.xyz;
 
                 // Project player position onto plane
-                float3 planeNormal = float3(0, 1, 0);
+                float3 planeNormal = float3(0, 0,1);
                 float3 pointOnPlane = playerWorldPos - dot(playerWorldPos - i.worldPos, planeNormal) * planeNormal;
 
                 // Transform point to object space
@@ -102,15 +102,13 @@ Shader "Custom/HolographicWall1"
                     (pointInObjectSpace.x + worldToUVScale.x * 0.5) / worldToUVScale.x, // Normalize and center
                     (pointInObjectSpace.z + worldToUVScale.y * 0.5) / worldToUVScale.y  
                 );
-
-       
+                
                 // Hex grid logic
-                float comHex = 1.0;
                 float horizontalOffset = 0.2 * saturate(_HexMultiplier);      
                 float verticalOffset = 0.056 * saturate(_HexMultiplier);   
 
                 
-                float3 color = (0,0,0);
+                float4 color = (0,0,0,0);
            
                 for (int y = 0; y <= _HexRows; y++)
                 {
@@ -128,8 +126,8 @@ Shader "Custom/HolographicWall1"
 
                         // Measure distance in UV space
                         float distanceToHex = max(distance(hexCenter, p_uv), _maxGrowth); // Ensure a minimum distance
-
-                        // Generate the hexagon
+                        //float zDistance = max(distance(i.worldPos.z,_PlayerPosition.z),_maxGrowth*8);
+                        //distanceToHex*=zDistance;
                         float hex = hexagon(i.uv, hexCenter, distanceToHex * _FadeRange);
 
                         //Invert hex to color it
@@ -141,13 +139,6 @@ Shader "Custom/HolographicWall1"
                         
                     }
                         
-                        comHex*=hex;
-                        
-                        
-
-                        // Combine hexagons
-                      
-
                         // Debug: Mark hex centers in red
                        // if (distance(i.uv, hexCenter) < 0.01) {
                         //    return fixed4(1.0, 0.0, 0.0, 1.0); // Red highlight for hex centers
@@ -156,11 +147,13 @@ Shader "Custom/HolographicWall1"
                 }
         
 
-                comHex = 1 - comHex; // Invert for visual effect
                 
+                
+                
+               
                 // Return the final result
                  //return fixed4(color * hexCutout, hexCutout);
-                return fixed4(comHex*color, 1.0);
+                return fixed4(color*float4(1,1,1,1));
             }
 
 
