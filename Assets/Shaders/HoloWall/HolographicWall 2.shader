@@ -2,17 +2,21 @@ Shader "Custom/HolographicWall1"
 {
     Properties
     {
-        _PlayerPosition ("Player Position", Vector) = (0,0,0,0)
-        _FadeRange ("Fade Range", Range(0,100)) = 0
-        _BaseColor ("Base Color", Color) = (0.0, 0.7, 1.0, 1.0)
-        _SecondColor ("Base Color", Color) = (0.0, 0.7, 1.0, 1.0)
+        _PlayerPosition ("Player Position", Vector) = (0,0,0,0) // can be removed
         
+        [Header (Transparency)]
+        _RevealDistance ("Reveal Distance", Float) = 10.0
+       
+        [Header (Color Gradient)]
+        _NearColor ("Close Color", Color) = (0.0, 0.7, 1.0, 1.0)
+        _FarColor ("Distant Color", Color) = (0.0, 0.7, 1.0, 1.0)
+        
+        [Header (Hex Modifiers)]
+        _HexScale ("HexScale", Range(0,100)) = 100
+        _HexMultiplier ("Hex Multiplier",Range(0,1)) =1
+        _maxGrowth ("Max Hex Size",Range(0,1)) =0.5
         _HexesprRow ("HexProw",Int) =1
         _HexRows ("HexRows",Int) =1
-        _HexMultiplier ("Hex Multiplier",Range(0,1)) =1
-        _xPoint ("X Point",Range(0,1)) =0.5
-        _yPoint ("Y Point",Range(0,1)) =0.5
-        _maxGrowth ("Max Hex Size",Range(0,1)) =0.5
     
     }
     SubShader
@@ -45,15 +49,16 @@ Shader "Custom/HolographicWall1"
             };
 
             float4 _PlayerPosition;
-            float _FadeRange;
+
+            float _RevealDistance;
+            
+            float4 _NearColor;
+            float4 _FarColor;
+            
             float _HexScale;
-            float4 _BaseColor;
-            float4 _SecondColor;
             int  _HexesprRow;
             float _HexMultiplier;
             int _HexRows;
-            float _xPoint;
-            float _yPoint;
             float _maxGrowth;
             
             v2f vert (appdata v)
@@ -80,16 +85,13 @@ Shader "Custom/HolographicWall1"
                 return smoothstep(0.5, 0.51, cos(floor(0.5 + a / b) * b - a) * length(r));
             }
 
-            
-
-            fixed4 frag(v2f i) : SV_Target
+            float2 ProjectedUV(float3 worldPos)
             {
-            
-                float3 playerWorldPos = _PlayerPosition.xyz;
+                 float3 playerWorldPos = _PlayerPosition.xyz;
 
                 // Project player position onto plane
                 float3 planeNormal = float3(0, 0,1);
-                float3 pointOnPlane = playerWorldPos - dot(playerWorldPos - i.worldPos, planeNormal) * planeNormal;
+                float3 pointOnPlane = playerWorldPos - dot(playerWorldPos - worldPos, planeNormal) * planeNormal;
 
                 // Transform point to object space
                 float3 pointInObjectSpace = mul(unity_WorldToObject, float4(pointOnPlane, 1.0)).xyz;
@@ -98,16 +100,25 @@ Shader "Custom/HolographicWall1"
                 float2 worldToUVScale = float2(10.0, 10.0); //Currently adjust til appropriate
 
                 //1 - uv since it is inverted at some point 
-                float2 p_uv = 1-float2(
+                return  1-float2(
                     (pointInObjectSpace.x + worldToUVScale.x * 0.5) / worldToUVScale.x, // Normalize and center
                     (pointInObjectSpace.z + worldToUVScale.y * 0.5) / worldToUVScale.y  
                 );
-                
-                // Hex grid logic
+            }
+
+            fixed4 frag(v2f i) : SV_Target
+            {
+                // Project Player Position
+                float2 p_uv =ProjectedUV(i.worldPos); 
+
+                //Get z Distance since it is independent of uv placement
+                float zDistance = max(distance(i.worldPos.z,_PlayerPosition.z),_maxGrowth*8);
+
+                // Hex grid logic making it scalable 
                 float horizontalOffset = 0.2 * saturate(_HexMultiplier);      
                 float verticalOffset = 0.056 * saturate(_HexMultiplier);   
 
-                
+                //Empty color vector colored in by hexes in loop
                 float4 color = (0,0,0,0);
            
                 for (int y = 0; y <= _HexRows; y++)
@@ -126,16 +137,16 @@ Shader "Custom/HolographicWall1"
 
                         // Measure distance in UV space
                         float distanceToHex = max(distance(hexCenter, p_uv), _maxGrowth); // Ensure a minimum distance
-                        float zDistance = max(distance(i.worldPos.z,_PlayerPosition.z),_maxGrowth*8);
+                        
                         distanceToHex*=zDistance;
-                        float hex = hexagon(i.uv, hexCenter, distanceToHex * _FadeRange);
+                        float hex = hexagon(i.uv, hexCenter, distanceToHex * _HexScale);
 
                         //Invert hex to color it
                         hex = 1-hex;
                         
                     if (hex > 0.0 )
                     {
-                        color = lerp(_BaseColor, _SecondColor,distanceToHex*3);
+                        color = lerp(_NearColor, _FarColor,distanceToHex*3);
                         
                     }
                         
@@ -146,13 +157,6 @@ Shader "Custom/HolographicWall1"
                     }
                 }
         
-
-                
-                
-                
-               
-                // Return the final result
-                 //return fixed4(color * hexCutout, hexCutout);
                 return fixed4(color*float4(1,1,1,1));
             }
 

@@ -110,9 +110,9 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _HexMultiplier: 0.738
+    - _HexMultiplier: 0.884
     - _HexRows: 32.8
-    - _HexScale: 11
+    - _HexScale: 87.2
     - _HexStepMax: 0.21
     - _HexStepMin: 0.01
     - _HexesprRow: 10.2
@@ -141,7 +141,9 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DotColor: {r: 1, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _PlayerPosition: {r: -1.41, g: 1.26, b: 9.62, a: 0}
+    - _FarColor: {r: 0, g: 1, b: 0.1652832, a: 1}
+    - _NearColor: {r: 0, g: 0.7, b: 1, a: 1}
+    - _PlayerPosition: {r: -0.68, g: 3.07, b: 9.48, a: 0}
     - _SecondColor: {r: 0.12474215, g: 1, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _TargetPosition: {r: 0.8, g: -0.08, b: 11.65, a: 0}
