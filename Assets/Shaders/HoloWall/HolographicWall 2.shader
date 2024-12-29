@@ -6,6 +6,7 @@ Shader "Custom/HolographicWall1"
         
         [Header (Transparency)]
         _RevealDistance ("Reveal Distance", Float) = 10.0
+        _FadeStrength ("Fade Strength", Float) = 10.0
        
         [Header (Color Gradient)]
         _NearColor ("Close Color", Color) = (0.0, 0.7, 1.0, 1.0)
@@ -51,6 +52,7 @@ Shader "Custom/HolographicWall1"
             float4 _PlayerPosition;
 
             float _RevealDistance;
+            float _FadeStrength;
             
             float4 _NearColor;
             float4 _FarColor;
@@ -106,6 +108,11 @@ Shader "Custom/HolographicWall1"
                 );
             }
 
+              float lerpVisibility(float distance, float revealDist, float fadeRange)
+            {
+                return smoothstep(revealDist + fadeRange, revealDist, distance);
+            }
+
             fixed4 frag(v2f i) : SV_Target
             {
                 // Project Player Position
@@ -119,7 +126,8 @@ Shader "Custom/HolographicWall1"
                 float verticalOffset = 0.056 * saturate(_HexMultiplier);   
 
                 //Empty color vector colored in by hexes in loop
-                float4 color = (0,0,0,0);
+                float1 visibility = 0;
+                float4 color = (0,0,0,visibility);
            
                 for (int y = 0; y <= _HexRows; y++)
                 {
@@ -147,7 +155,7 @@ Shader "Custom/HolographicWall1"
                     if (hex > 0.0 )
                     {
                         color = lerp(_NearColor, _FarColor,distanceToHex*3);
-                        
+                        visibility = lerpVisibility(_RevealDistance,-distanceToHex,_FadeStrength);
                     }
                         
                         // Debug: Mark hex centers in red
@@ -157,7 +165,7 @@ Shader "Custom/HolographicWall1"
                     }
                 }
         
-                return fixed4(color*float4(1,1,1,1));
+                return fixed4(color.rgb,visibility*0.6);
             }
 
 
