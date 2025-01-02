@@ -57,25 +57,38 @@ Shader "Unlit/Shapes"
                 return o;
             }
 
+            float3 createRectangle(float width,float height,float2 uv)
+            {
+                
+                float2 bl = step(float2(width,height),uv);
+                float2 tr = step(float2(width,height),1-uv);
+                float pct =bl.x*bl.y*tr.x*tr.y;
+
+                return float3(pct,pct,pct);
+            }
+
+            float createCircle(float radius,float smoothness, float2 uv)
+            {
+                float2 origin = float2(0.5,0.5);
+                float pct = distance(uv,origin)*2;
+                return smoothstep(radius,radius*smoothness,pct);
+            }
+            
+
             fixed4 frag (v2f i) : SV_Target
             {
-                float2 st = i.uv/1;
+                float2 st = i.uv;
                 
+                                   
+                float3 color = float3(0,0,0);
                 
-                // set to 1 for linear curve
-                float yExp = pow(st.x,2);
-                float yStep = step(0.5,st.x);
-                float ySmoothStep =smoothstep(0.01,0.8,st.x);
-                float Y = ySmoothStep;
-                
-                    
-                
-                float3 color = float3(Y,Y,Y);
-                
-                float pct = plotExp(st,Y);
 
+                float3 rectangle = createRectangle(0.04,0.1,st);
+                float3 circle = createCircle(0.3,1,st);
+                
+                
                 // Plot the plot onto the color gradient
-                color = (1-pct)*color+pct*float3(0,1,0);
+                color = circle;
                 
               
                 return float4(color,1);
