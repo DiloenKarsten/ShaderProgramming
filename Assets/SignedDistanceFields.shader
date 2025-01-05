@@ -75,11 +75,28 @@ Shader "Unlit/Shapes"
                 float pct = distance(uv,origin)*2;
                 return smoothstep(radius,radius*smoothness,pct);
             }
+            float box(in float2 _st, in float2 _size){
+                _size = float2(0.5,0.5) - _size*0.5;
+                float2 uv = smoothstep(_size,
+                                    _size+float2(0.001,0.001),
+                                    _st);
+                uv *= smoothstep(_size,
+                                _size+float2(0.001,0.001),
+                                float2(1.0,1.0)-_st);
+                return uv.x*uv.y;
+            }
+
+            float _cross(in float2 _st, float _size){
+                return  box(_st, float2(_size,_size/100.)) +
+                        box(_st, float2(_size/4.,_size));
+            }
             
 
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 st = i.uv;
+
+                float crosus=_cross(st,1);
 
                 float2 pos = float2(.1,0)-st;
 
@@ -124,7 +141,7 @@ Shader "Unlit/Shapes"
                 }
                 
               
-                return float4(timeHype,1);
+                return float4(crosus,crosus,crosus,1);
             }
             ENDCG
         }
