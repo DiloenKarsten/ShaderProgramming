@@ -141,7 +141,7 @@ Shader "Unlit/Shapes"
                 }
                 
               
-                return float4(crosus,crosus,crosus,1);
+                return float4(timeHype,1);
             }
             ENDCG
         }
