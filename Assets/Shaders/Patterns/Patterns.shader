@@ -4,6 +4,8 @@ Shader "Unlit/Radar"
     {
         _MainTex ("Texture", 2D) = "white" {}
          _Angle ("Angle", float) = 0
+        _GlassSeed ("GlassSeed", float) =12
+        _NormalMap ("Normal Map", 2D) ="bump" {}
     }
     SubShader
     {
@@ -130,10 +132,51 @@ Shader "Unlit/Radar"
                     + step(6.0,r)-step(8.0,r)
                     + smoothstep(max(8.0,R-20.0),R,r)-step(R,r);
             }
+
+
+            float2 offset(float2 _st){
+                float2 uv;
+
+                if(_st.x>0.5){
+                    uv.x = _st.x - 0.5;
+                } else {
+                    uv.x = _st.x + 0.5;
+                }
+
+                if(_st.y>0.5){
+                    uv.y = _st.y - 2.5;
+                } else {
+                    uv.y = _st.y + 1.5;
+                }
+
+                return uv;
+            }
+            float CreateGrid(float2 uv,float seed)
+             {
+                          // Scale UVs to match the grid size
+            float2 gridUV = uv ; // Adjust "6.0" to match your grid density
+          
+            float2 gridCell = floor(gridUV); // Identify the grid cell
+
+            // Generate a unique ID for the grid cell
+            float cellID = gridCell.x + gridCell.y * 100.0; // Combine X and Y for unique ID (adjust scale as needed)
+
+            // Generate a random value for the grid cell (simple hash function)
+            //float randomValue = frac(sin(cellID * 12.9898) * 43758.5453123);
+            return clamp(frac(sin(cellID * seed) * 43758.5453123),0.01,1);
+             }
+            float3 RandomColor(float randomValue)
+             {
+                 return float3(
+                    frac(randomValue * 2.3), // R
+                    frac(randomValue * 3.7), // G
+                    frac(randomValue * 5.1));  // B
+             }
             
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Angle; 
+            float _Angle;
+            float _GlassSeed;
             
 
             v2f vert (appdata v)
@@ -145,36 +188,59 @@ Shader "Unlit/Radar"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
-            {
-                float2 st = i.uv;
-                float2 st1 = i.uv1;
-                
-               
-                float3 color = float3(0,0,0);
-                
-             
-                st*=6;
-                st.y*=0.5;
-                st = frac(st);
-                st= rotate2d(st,_Angle);
+           fixed4 frag(v2f i) : SV_Target
+{
+    float2 st = i.uv;     // UV coordinates
+    float2 st1 = i.uv1;   // Secondary UVs if needed for offset
+   
+    st=offset(st);
+    float3 color = float3(0, 0, 0); // Base color
+    float3 color1 = float3(0, 0, 0); // Base color
+     st*=float2(6,6/2);
+    st1*=6;
+    st1=offset(st1);
 
-                color = (1,1,0);
-                color *= (st,0);
+   
+   
 
-                
-                float3 Lircle = circle(st,0.5,0.6,0.5);
-                color = createRectangle(0.02,0.01,st);
-                float center = float2(0,0);
-               
+    float randomValue = CreateGrid(st,_GlassSeed);
+    float randomValue1 = CreateGrid(st1,_GlassSeed);
+ 
+  
+    st = frac(st); // Match the grid density to "6.0"
+    st1 = frac(st1);
+     st1= rotate2d(st1,_Angle);
+
+    
+    
+
+    // Render rectangles with the random color
+    
+    if (st.y<0.1|| st.y > 0.6)
+    {
+        color1=createRectangle(0.35,0.35,st1);
         
-               
-                
-                
-                float3 debugUV = float3(st,0);
-                return fixed4(debugUV,1);
-                //return fixed4(OuterRing,OuterRing,map+OuterRing,0.5);
-            }
+    }
+    
+    color1 = step(color1,0);
+    
+    color += createRectangle(0.02, 0.01, st) * RandomColor(randomValue);
+    color *=color1;
+    
+    
+     if (st.y<0.1|| st.y > 0.6)
+    {
+          color +=max(0,(2*createRectangle(0.4,0.4,st1))*RandomColor(randomValue1));
+        
+    }
+  
+
+   
+
+    // Return the final color
+    return fixed4(color, 1.0);
+}
+
             ENDCG
         }
     }
