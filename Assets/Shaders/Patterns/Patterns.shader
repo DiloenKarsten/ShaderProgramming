@@ -8,6 +8,7 @@ Shader "Unlit/Radar"
          _Angle ("Angle", float) = 0
         _GlassSeed ("GlassSeed", float) =12
         _BumpStrength ("Bump Strength", Range(0,1)) =0.5
+        _DispStrength ("Displacement Strength", Range(0,1)) =1
         
     }
     SubShader
@@ -141,17 +142,23 @@ Shader "Unlit/Radar"
             float _Angle;
             float _GlassSeed;
             float _BumpStrength;
+            float _DispStrength;
 
             v2f vert (appdata v)
             {
                 v2f o;
+                o.uv = v.uv;
+                float height = tex2Dlod(_HeightMap,float4(o.uv,0,0)).x;
+                v.vertex.xyz += v.normal*(height*_DispStrength);
+                
+                
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.normal = UnityWorldToObjectDir(v.normal);
                 o.tangent = UnityWorldToObjectDir(v.tangent.xyz);
                 o.bitangent = cross(o.normal,o.tangent);
                 o.bitangent*=v.tangent.w*unity_WorldTransformParams.w;
                  o.lightDir = normalize(_WorldSpaceLightPos0.xyz);
-                o.uv = v.uv;
+              
                 o.uv1 = v.uv1;
                 return o;
             }

@@ -1,4 +1,4 @@
-Shader "Custom/HolographicWall1"
+ Shader "Custom/HolographicWall1"
 {
     Properties
     {
