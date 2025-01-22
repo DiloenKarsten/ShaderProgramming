@@ -112,27 +112,8 @@ Shader "Unlit/Radar"
                     frac(randomValue * 3.7), // G
                     frac(randomValue * 5.1));  // B
              }
-            float3 NormalMap (float2 uv, float3 tangent, float3 bitangent, float3 normal,
-                sampler2D _NormalMap, float _BumpStrength)
-             {
-                 float3 tangentSpaceNormal = UnpackNormal(tex2D(_NormalMap,uv));
-                tangentSpaceNormal = normalize(lerp(float3(0,1,0),tangentSpaceNormal,_BumpStrength));
-
-                float3x3 mtxTangToWorld={
-                tangent.x,bitangent.x,normal.x,
-                tangent.y,bitangent.y,normal.y,
-                tangent.z,bitangent.z,normal.z,
-                };
-                 //return the Normals 
-                return  mul(mtxTangToWorld,tangentSpaceNormal);
-             }
-            float LambertianLighting(float3 N)
-             {
-                 
-                    float3 worldNormal = normalize(N)*-1; // Assuming normal is already in world space
-                    float3 L = normalize(_WorldSpaceLightPos0.xyz); // Light direction in world space
-                    return  max(0, dot(worldNormal, L)); // Lambertian lighting calculation
-             }
+  
+ 
 
             
             sampler2D _MainTex;
@@ -147,16 +128,9 @@ Shader "Unlit/Radar"
             v2f vert (appdata v)
             {
                 v2f o;
-                o.uv = v.uv;
-                float height = tex2Dlod(_HeightMap,float4(o.uv,0,0)).x;
-                v.vertex.xyz += v.normal*(height*_DispStrength);
-                
-                
+                o.uv = v.uv;             
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.normal = UnityWorldToObjectDir(v.normal);
-                o.tangent = UnityWorldToObjectDir(v.tangent.xyz);
-                o.bitangent = cross(o.normal,o.tangent);
-                o.bitangent*=v.tangent.w*unity_WorldTransformParams.w;
                  o.lightDir = normalize(_WorldSpaceLightPos0.xyz);
               
                 o.uv1 = v.uv1;
@@ -167,16 +141,14 @@ Shader "Unlit/Radar"
             {
                 float2 st = i.uv;     // UV coordinates
                 float2 st1 = i.uv1;   // Secondary UVs if needed for offset
-                float2 st2 =i.uv;
-               
+                          
                 st=offset(st);
                 float3 color = float3(0, 0, 0); // Base color
                 float3 color1 = float3(0, 0, 0); // Base color
-                 st*=float2(6,6/2);
-                st1*=6;
+                 st*=float2(1,1);
+                st1*=1;
                 st1=offset(st1);
-                
-                float3 N = NormalMap(i.uv,i.tangent,i.bitangent,i.normal,_NormalMap,_BumpStrength);
+       
                
 
                 
@@ -210,13 +182,13 @@ Shader "Unlit/Radar"
                       color +=max(0,(2*createRectangle(0.4,0.4,st1))*RandomColor(randomValue1));
                     
                 }
-             // color = float3(st,0);
+              color = float3(st,0);
 
                
 
                 // Return the final color
                 //return fixed4(N,1);
-                return fixed4(color*LambertianLighting(N),1);
+                return fixed4(color,1);
             }
 
             ENDCG

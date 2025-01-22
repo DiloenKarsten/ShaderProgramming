@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Patterns
-  m_Shader: {fileID: 4800000, guid: 3abbc613f206a424d8a9a5098463d003, type: 3}
+  m_Name: Patterns 1
+  m_Shader: {fileID: 4800000, guid: 4aab62d8b3f31e34c9cae6c4ce1be8a8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -106,11 +106,11 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Angle: -3.94
+    - _Angle: 18.93
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _BumpStrength: 0.022
+    - _BumpStrength: 0.177
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -121,7 +121,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _GlassSeed: 8.09
+    - _GlassSeed: 9.77
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
