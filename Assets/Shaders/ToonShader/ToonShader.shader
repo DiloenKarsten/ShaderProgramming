@@ -80,5 +80,9 @@ Shader "Custom/ToonShaderWithLightDirection"
 
             ENDCG
         }
+        Pass
+        {
+            Tags {"lightmode"="ShadowCaster"}
+        }
     }
 }
