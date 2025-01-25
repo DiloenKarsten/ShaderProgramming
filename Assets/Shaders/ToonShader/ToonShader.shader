@@ -46,6 +46,7 @@ Shader "Custom/ToonShaderWithLightDirection"
 
             v2f vert (MeshData v) {
                 v2f o;
+               
                 o.vertex = UnityObjectToClipPos(v.vertex); // Transforms from local space to clip space (MVP)
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex); // Transforms 2D UV by scale/bias property
                 o.normal = UnityObjectToWorldNormal(v.normal); // Transforms local normals into world normals

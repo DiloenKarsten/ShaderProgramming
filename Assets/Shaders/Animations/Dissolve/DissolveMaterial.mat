@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: DissolveMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: 304f068972cff8c4bb5cf1a89cec224b, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 951184263c5510d4fa8745cb63c7c7d3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -24,6 +24,14 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Layer_55DC4F9F:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Layer_C28ABF5D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _AlphaTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -55,6 +63,10 @@ Material:
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HEx:
+        m_Texture: {fileID: 2800000, guid: c15e140ed0c607240888780b68518a81, type: 3}
+        m_Scale: {x: 4, y: 4}
         m_Offset: {x: 0, y: 0}
     - _METALNESS_MAP:
         m_Texture: {fileID: 0}
@@ -100,6 +112,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_d39fc2f4ae5d499e8dfb35e2de5b316b_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: c15e140ed0c607240888780b68518a81, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _tileable:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -114,24 +134,28 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Amplitude: 1.6
+    - _Alpha: 0.821
+    - _Amplitude: 0.041
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
     - _BumpScale: 1
-    - _Cutoff: 8
-    - _Cuttoff: 51.87
+    - _Cutoff: -23.3
+    - _Cuttoff: 6
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnableExternalAlpha: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _HexDepth: 0.19
     - _METALNESS: 0
     - _Metallic: 0
     - _Mode: 0
-    - _NoiseScale: 54.5
+    - _NoiseScale: 2.7
     - _NoiseStrength: 11.78
-    - _NoiseWidth: 12.2
+    - _NoiseWidth: 9.07
+    - _Noise_Width: 1
+    - _Noise_Zoom: 69.02
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueControl: 0
@@ -142,11 +166,14 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _WaveSpeed: 0.767
     - _ZWrite: 1
     - _add: 5.69
+    - _alpha: -1.9
+    - _cutoff: 53.4
     m_Colors:
     - _BASE_COLOR: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.7484276, g: 0.7484276, b: 0.7484276, a: 1}
+    - _Color: {r: 0.39489147, g: 0.69367635, b: 0.9622642, a: 1}
     - _EMISSION_COLOR: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}

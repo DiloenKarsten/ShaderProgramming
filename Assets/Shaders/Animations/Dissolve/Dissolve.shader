@@ -16,10 +16,14 @@ Shader"Unlit/Disolve"
         Pass
         {
             CGPROGRAM
+// Upgrade NOTE: excluded shader from OpenGL ES 2.0 because it uses non-square matrices
+#pragma exclude_renderers gles
             #pragma vertex vert
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+
+            #define TAU 6.28318530718
 
             float random(float2 uv)
             {
@@ -62,9 +66,37 @@ Shader"Unlit/Disolve"
             float _NoiseScale;
             float _NoiseWidth;
 
+               float2 rotate2d(float2 uv, float _angle)
+            {
+                uv -=0.5;
+                float2x3 rMatrix = float2x3(cos(_angle),-sin(_angle),1,
+                       sin(_angle),cos(_angle),1);
+                 uv = mul(uv,rMatrix);
+                uv+=0.5;
+                 return float2(uv.x,uv.y);
+            }
+            float sdfSphere(float3 p)
+            {
+             return length(p)-1;   
+            }
+           
+
+             float GetWave( float2 uv ) {
+                 
+                float2 uvsCentered = uv*2-1 ; 
+                float radialDistance = length( uvsCentered );
+                 //længde til centrum - tid for at ripple i korrekt retning 
+                float wave = sin( (-radialDistance + _Time.y * 0.1) * TAU * 5) * 0.1 + 0.5;
+                wave *= 1-radialDistance;
+                return wave;
+            }
+            
             v2f vert (appdata v)
             {
+                
                 v2f o;
+                   
+                 v.vertex.xy =float2(sin(10*v.vertex.x),sin(10*v.vertex.y));
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
@@ -76,10 +108,13 @@ Shader"Unlit/Disolve"
                 // sample the texture
                 float2 pos = float2(i.uv*_NoiseScale);
                 pos = noise(pos) *_NoiseWidth;
-                pos += i.worldPos.x;
+
+                //Direction it dissolves in
+                pos += i.worldPos.y;
                 float dissolve = step(_Cutoff,pos);
                 fixed4 col = tex2D(_MainTex, i.uv);
-                return fixed4(i.uv,0,dissolve);
+             
+                return fixed4(GetWave(i.uv)+i.uv,0,dissolve);
             }
             ENDCG
         }
