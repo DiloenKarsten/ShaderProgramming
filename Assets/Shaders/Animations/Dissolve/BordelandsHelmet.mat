@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DissolveMaterial
+  m_Name: BordelandsHelmet
   m_Shader: {fileID: -6465566751694194690, guid: 951184263c5510d4fa8745cb63c7c7d3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -134,7 +134,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.821
+    - _Alpha: 0.88
     - _Amplitude: 0.041
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
@@ -144,6 +144,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnableExternalAlpha: 0
+    - _Fresnel: 0.36
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -166,19 +167,20 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaveSpeed: 0.767
+    - _WaveSpeed: 0.33
     - _ZWrite: 1
     - _add: 5.69
     - _alpha: -1.9
     - _cutoff: 53.4
     m_Colors:
     - _BASE_COLOR: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.39489147, g: 0.69367635, b: 0.9622642, a: 1}
+    - _Color: {r: 0.3537736, g: 0.69483745, b: 1, a: 1}
     - _EMISSION_COLOR: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _SPECULAR_COLOR: {r: 1, g: 1, b: 1, a: 0}
+    - _direction: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &3677452149440347230
