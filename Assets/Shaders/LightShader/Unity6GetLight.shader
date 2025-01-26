@@ -61,38 +61,60 @@ Shader "Custom/UnlitShader"
                 return OUT;
             }
 
+            float3 DiffuseLighting(float3 N, float3 L, Light light)
+            {
+                float3 lambert = saturate(dot(N,L));
+                return lambert*light.color.xyz; //Falloff of light gradient if 0 object is dark.
+            }
+
+            float3 SpecularLighting(float3 N, float3 L, float3 wPos)
+            {
+                float3 V = normalize(_WorldSpaceCameraPos-wPos); //normalize to get viev direction to the camera
+                float3 R = reflect(-L,N); // reflected light around normal (-L since L points towards light)
+                return max(0,dot(V,R));
+            }
+
+            float3 SpecularBlinnPhong(float3 N, float3 L, float3 wPos, Light light)
+            {
+               
+                float3 lambert = saturate(dot(N,L));
+                 float3 V = normalize(_WorldSpaceCameraPos-wPos); //View Vector
+                float3 H = normalize(L+V); // Half-view vector
+
+                float specularExponent = exp2(_Glossyness*8)+2; //bad for optimisation should probably be passed from c# instead of math here.
+                float3 specularLight =  saturate(dot(H,N))*(lambert>0);
+                specularLight = pow(specularLight, specularExponent); // Specular Exponent
+                specularLight*=light.color.xyz;
+                return specularLight;
+            }
+            
+
             half4 frag(Varyings IN) : SV_Target
             {
                 half3 rock = SAMPLE_TEXTURE2D(_TextureAlbedo,sampler_TextureAlbedo,IN.uv).rgb;
                 half3 surfaceColor = rock * _Color.rgb;
                 
                 Light light = GetMainLight();
-                Light light2 = GetAdditionalLight(0,IN.wPos);
-                light2.distanceAttenuation = _LightRange;
-                IN.lightAmount = LightingLambert(light2.color,light2.direction,IN.normal)*light2.distanceAttenuation; // Ligthing Lambert function
+              
                 float3 N = normalize(IN.normal); //normalized to improve specular
                 float3 L = normalize(light.direction);
-                float3 lambert = saturate(dot(N,L));
-                float3 diffuseLight = lambert*light.color.xyz; //Falloff of light gradient if 0 object is dark.
                 
-                float3 V = normalize(_WorldSpaceCameraPos-IN.wPos); //normalize to get direction to the camera
-                float3 R = reflect(-L,N); // reflected light around normal (-L since L points towards light)
-                //float3 specularLight = max(0,dot(V,R)); 
+                float3 diffuseLight = DiffuseLighting(N,L,light);
+                
+              
+                float3 specularLight = SpecularLighting(N,L,IN.wPos); 
                 
                 // Specular Lighting Blinn-Phong
+                float3 specularBlinnPhong = SpecularBlinnPhong(N,L, IN.wPos,light);
+                
 
-                float3 H = normalize(L+V);
-                float3 specularLight = saturate(dot(H,N))*(lambert>0);
-
-                float specularExponent = exp2(_Glossyness*8)+2; //bad for optimisation should probably be passed from c# instead of math here.
-                specularLight = pow(specularLight, specularExponent); // Specular Exponent
-                specularLight*=light.color.xyz;
-
-                float fresnel = (1-dot(V,N))*((cos(_Time.y*4))*0.5+0.5);
+                
+                // Fresnel giver skinnende kanter omkring runde objekter
+               // float fresnel = (1-dot(V,N))*((cos(_Time.y*4))*0.5+0.5);
 
 
                 
-               return float4(diffuseLight*surfaceColor*specularLight+IN.lightAmount,1); //Specular light is not multiplied by color unless material is metallic
+               return float4(diffuseLight*surfaceColor*specularBlinnPhong+IN.lightAmount,1); //Specular light is not multiplied by color unless material is metallic
 
 
 
