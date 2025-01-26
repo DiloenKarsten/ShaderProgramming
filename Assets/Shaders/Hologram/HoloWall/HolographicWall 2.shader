@@ -1,4 +1,4 @@
-Shader "Custom/HolographicWall1"
+ Shader "Custom/HolographicWall1"
 {
     Properties
     {
@@ -14,7 +14,7 @@ Shader "Custom/HolographicWall1"
         _FarColor ("Distant Color", Color) = (0.0, 0.7, 1.0, 1.0)
         
         [Header (Hex Modifiers)]
-        _HexScale ("HexScale", Range(0,100)) = 100
+        _HexScale ("HexScale", Range(0,200)) = 100
         _HexMultiplier ("Hex Multiplier",Range(0,1)) =1
         _maxGrowth ("Max Hex Size",Range(0,1)) =0.5
         _HexesprRow ("HexProw",Int) =1
@@ -83,7 +83,7 @@ Shader "Custom/HolographicWall1"
                 float2 r = center - uv;
                 r *= scale;
 
-                float a = atan2(r.x, r.y);
+                float a = atan2(r.x, r.y); //add a value here to rotate it
                 float b = pi * 2 / N;
 
                 return smoothstep(0.5, 0.51, cos(floor(0.5 + a / b) * b - a) * length(r));
